@@ -24,11 +24,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	private JwtTokenStore tokenStore;
 	
 	//Enpoints públicos
-	private static final String[] PUBLICA = {"/oauth/token", "/h2-console/**"};
+	private static final String[] PUBLIC = {"/oauth/token", "/h2-console/**"};
 	
-	private static final String[] OPERATOR_OR_ADMIN = {"/products/**","/categories/**"};
+	private static final String[] OPERATOR_GET= {"/departments/**","/employees/**"};
 	
-	private static final String[] ADMIN = {"/users/**"};
 	
 	/*Faz com que o resource Server seja capaz de decodificar o Token 
 	 * e ver se eles está válido ou não */
@@ -48,11 +47,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 		}
 		
 		http.authorizeRequests()
-		.antMatchers(PUBLICA).permitAll()//Permite para todo mundo
-		.antMatchers(HttpMethod.GET, OPERATOR_OR_ADMIN).permitAll()//Permitido para as Rotas GET 
-		.antMatchers(OPERATOR_OR_ADMIN).hasAnyRole("OPERATOR","ADMIN")//Permitido apenas para esses papeis
-		.antMatchers(ADMIN).hasRole("ADMIN")
-		.anyRequest().authenticated();
+		.antMatchers(PUBLIC).permitAll()//Permite para todo mundo
+		.antMatchers(HttpMethod.GET, OPERATOR_GET).hasAnyRole("OPERATOR")//Rotas Get permitas para o operador
+		.anyRequest().hasAnyRole("ADMIN");
 	}
 	
 }
